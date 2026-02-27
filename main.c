@@ -58,8 +58,8 @@ typedef uint8_t             byte;
 typedef uint16_t            ushort;
 
 typedef struct {
-    byte g;
     byte r;
+    byte g;
     byte b;
 } rgb_t;
 
