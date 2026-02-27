@@ -1,0 +1,1 @@
+Run `compiledb make tps55289.hex` to generate `compile_commands.json`

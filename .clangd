@@ -1,0 +1,4 @@
+CompileFlags:
+  Add:
+    - -I/opt/homebrew/opt/avr-gcc@15/avr/include
+    - -Wno-unknown-attributes
