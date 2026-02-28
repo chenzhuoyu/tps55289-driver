@@ -16,7 +16,14 @@
 #define REF_15V             0x0599
 #define REF_20V             0x0793
 
+#define CDC_SC_MASK         (1 << 7)
+#define CDC_OCP_MASK        (1 << 6)
+#define CDC_OVP_MASK        (1 << 5)
+#define CDC_COMP            0b101
+
 #define MODE_OE             (1 << 7)
+#define MODE_FPWM           (1 << 1)
+
 #define STATUS_SCP          (1 << 7)
 #define STATUS_OCP          (1 << 6)
 #define STATUS_OVP          (1 << 5)
@@ -48,11 +55,11 @@
 })
 
 #define RGB_OFF             RGB(0x00, 0x00, 0x00)
-#define RGB_RED             RGB(0x0a, 0x00, 0x00)
-#define RGB_BLUE            RGB(0x00, 0x00, 0x0a)
-#define RGB_GREEN           RGB(0x00, 0x0a, 0x00)
-#define RGB_WHITE           RGB(0x0a, 0x0a, 0x0a)
-#define RGB_YELLOW          RGB(0x0a, 0x0a, 0x00)
+#define RGB_RED             RGB(0x08, 0x00, 0x00)
+#define RGB_BLUE            RGB(0x00, 0x00, 0x08)
+#define RGB_GREEN           RGB(0x00, 0x08, 0x00)
+#define RGB_WHITE           RGB(0x08, 0x08, 0x08)
+#define RGB_YELLOW          RGB(0x08, 0x08, 0x00)
 
 typedef uint8_t             byte;
 typedef uint16_t            ushort;
@@ -215,11 +222,11 @@ static void update_pins(byte pins) {
 }
 
 static void update_leds() {
-    byte scp   = (_pmu_regs.status & STATUS_SCP) ? 0x0a : 0;
-    byte ocp   = (_pmu_regs.status & STATUS_OCP) ? 0x0a : 0;
-    byte ovp   = (_pmu_regs.status & STATUS_OVP) ? 0x0a : 0;
-    byte buck  = (_pmu_regs.status & 3)          ? 0x0a : 0;
-    byte boost = (_pmu_regs.status & 1) == 0     ? 0x0a : 0;
+    byte scp   = (_pmu_regs.status & STATUS_SCP) ? RGB_RED.r   : 0;
+    byte ocp   = (_pmu_regs.status & STATUS_OCP) ? RGB_GREEN.g : 0;
+    byte ovp   = (_pmu_regs.status & STATUS_OVP) ? RGB_BLUE.b  : 0;
+    byte buck  = (_pmu_regs.status & 3)          ? RGB_RED.r   : 0;
+    byte boost = (_pmu_regs.status & 1) == 0     ? RGB_GREEN.g : 0;
 
     /* construct the basic LED data */
     led_data_t data = {
@@ -254,7 +261,8 @@ static void update_pmu() {
 
 int main() {
     _pmu_regs.ref = REF_5V;
-    _pmu_regs.mode = 0;
+    _pmu_regs.cdc = CDC_SC_MASK | CDC_OCP_MASK | CDC_OVP_MASK | CDC_COMP;
+    _pmu_regs.mode = MODE_FPWM;
 
     /* initialize hardware */
     clk_init();

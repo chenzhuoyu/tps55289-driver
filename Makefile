@@ -1,7 +1,7 @@
 MCU     = attiny1614
 FREQ	= 20000000
 PROG    = serialupdi
-PORT    = /dev/cu.usbserial-14410
+PORT    = /dev/cu.usbserial-110
 
 TARGET  = tps55289
 OBJECTS = main.o
